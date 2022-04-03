@@ -14,12 +14,11 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const PMBERC20Token = await hre.ethers.getContractFactory("Test");
-  const PMBERC20token = await PMBERC20Token.deploy();
+  const PMBT = await hre.ethers.getContractFactory("PMBT");
+  const token = await PMBT.deploy();
+  await token.deployed();
 
-  await PMBERC20token.deployed();
-
-  console.log("Greeter deployed to:", PMBERC20token.address);
+  console.log("Greeter deployed to:", token.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
