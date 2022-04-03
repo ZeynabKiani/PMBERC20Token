@@ -1,17 +1,33 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-pragma solidity ^0.5.0;
-import "../openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "../openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";
-import "../openzeppelin/contracts/token/ERC20/ERC20Mintable.sol";
-import "../openzeppelin/contracts/token/ERC20/ERC20Burnable.sol";
+contract MyToken is ERC20, ERC20Burnable, Pausable, Ownable {
+    constructor() ERC20("MyToken", "MTK") {
+        _mint(msg.sender, 1000 * 10 ** decimals());
+    }
 
-contract PMBT is ERC20, ERC20Detailed("TestToken", "TST", 0), ERC20Mintable, ERC20Burnable
-{
-    // interface for the money contract
-    
-    constructor(address _owner, uint256 _quantity) public
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
+
+    function _beforeTokenTransfer(address from, address to, uint256 amount)
+        internal
+        whenNotPaused
+        override
     {
-        _mint(_owner, _quantity);
+        super._beforeTokenTransfer(from, to, amount);
     }
 }
